@@ -4,6 +4,6 @@ Have you ever wondered why our academic world is so cruel and full of injustice?
 
 If so, then this service is your answer!
 
-Give feedback, share opinions, rate subjects and show them why your life worse than ever before.
+Give feedback, share opinions, rate subjects and show them why your life has became worse than ever before.
 
 ![hannah](https://media1.tenor.com/images/67823ac0e306976132d83ad632624957/tenor.gif)
