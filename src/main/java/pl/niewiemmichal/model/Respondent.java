@@ -10,33 +10,23 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Teacher {
+public class Respondent {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     private Long id;
 
     @NonNull
     @NotBlank
-    @Size(max = 64)
+    @Size(min = 16, max = 16)
     @Column(nullable = false)
-    private String name;
+    private String token;
 
     @NonNull
-    @NotBlank
-    @Size(max = 64)
     @Column(nullable = false)
-    private String surname;
-
-    @NonNull
-    @NotBlank
-    @Size(max = 64)
-    @Column(nullable = false)
-    private AcademicDegree degree;
+    private Integer semester;
 }

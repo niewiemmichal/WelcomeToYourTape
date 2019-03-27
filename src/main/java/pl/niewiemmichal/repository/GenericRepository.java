@@ -12,7 +12,7 @@ import java.util.Optional;
 public class GenericRepository<T, ID extends Serializable> {
 
     @PersistenceContext(unitName="niewiemmichal")
-    private EntityManager entityManager;
+    protected EntityManager entityManager;
 
     private Class<T> persistentClass;
 
@@ -30,10 +30,9 @@ public class GenericRepository<T, ID extends Serializable> {
         return  entityManager.createQuery(query.select(query.from(persistentClass))).getResultList();
     }
 
+    @Transactional
     public T save(T entity) {
-        System.out.println("Saving entity");
         entityManager.persist(entity);
-        entityManager.flush();
         return entity;
     }
 
