@@ -5,6 +5,7 @@ import pl.niewiemmichal.model.Question;
 import javax.ejb.Stateless;
 
 @Stateless
-public class QuestionRepository extends GenericRepository<Question, Long> {
+public class QuestionRepository
+        extends GenericRepository<Question, Long> implements Repository<Question, Long> {
     QuestionRepository() { super(Question.class); }
 }

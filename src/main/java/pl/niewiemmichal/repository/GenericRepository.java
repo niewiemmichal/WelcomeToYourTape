@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class GenericRepository<T, ID extends Serializable> {
+abstract class GenericRepository<T, ID extends Serializable> {
 
     @PersistenceContext(unitName="niewiemmichal")
     protected EntityManager entityManager;
@@ -37,8 +37,9 @@ public class GenericRepository<T, ID extends Serializable> {
     }
 
     @Transactional
-    public void update(T entity) {
+    public T update(T entity) {
         entityManager.merge(entity);
+        return entity;
     }
 
     @Transactional
