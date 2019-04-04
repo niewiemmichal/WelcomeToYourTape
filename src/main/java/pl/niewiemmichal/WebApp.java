@@ -4,5 +4,5 @@ import javax.ws.rs.core.Application;
 
 @ApplicationPath("")
 public class WebApp extends Application {
-    // No siema
+    //bardzo fajny komentarz / pozdro dla claudii ktorej tu nie ma
 }
