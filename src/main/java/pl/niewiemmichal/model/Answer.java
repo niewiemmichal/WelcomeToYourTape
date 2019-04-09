@@ -27,8 +27,4 @@ public class Answer {
     @NonNull
     @ManyToOne
     private Question question;
-
-    @NonNull
-    @ManyToOne
-    private Respondent respondent;
 }

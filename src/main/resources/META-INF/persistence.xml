@@ -6,10 +6,8 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>java:comp/env/MySQLDataSource</jta-data-source>
         <class>pl.niewiemmichal.model.Subject</class>
-        <class>pl.niewiemmichal.model.Respondent</class>
         <class>pl.niewiemmichal.model.Answer</class>
         <class>pl.niewiemmichal.model.Question</class>
-        <class>pl.niewiemmichal.model.Student</class>
         <class>pl.niewiemmichal.model.Survey</class>
         <class>pl.niewiemmichal.model.Teacher</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
