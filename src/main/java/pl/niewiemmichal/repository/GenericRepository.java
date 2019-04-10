@@ -44,6 +44,6 @@ abstract class GenericRepository<T, ID extends Serializable> {
 
     @Transactional
     public void delete(T entity) {
-        entityManager.remove(entity);
+        entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
     }
 }

@@ -10,7 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/question")
+@Path("/questions")
 public class QuestionEndpoint {
 
     private Repository<Question, Long> questionRepository;
@@ -31,14 +31,12 @@ public class QuestionEndpoint {
     }
 
     @GET
-    @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Question> getAllQuestions() {
         return questionRepository.findAll();
     }
 
     @POST
-    @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Question addQuestion(@Valid Question question) {
@@ -46,7 +44,7 @@ public class QuestionEndpoint {
     }
 
     @PUT
-    @Path("/{id}/update")
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Question updateQuestion(@PathParam("id") Long id, @Valid Question question) {
