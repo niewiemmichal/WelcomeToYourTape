@@ -3,6 +3,7 @@ package pl.niewiemmichal.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @RequiredArgsConstructor
@@ -25,4 +26,7 @@ public class Answer {
     @NonNull
     @ManyToOne
     private Question question;
+
+    @NotNull
+    private Integer respondent;
 }
