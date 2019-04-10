@@ -21,7 +21,7 @@ abstract class GenericRepository<T, ID extends Serializable> {
     }
 
     public Optional<T> findById(ID id) {
-        return Optional.of(entityManager.find(persistentClass, id));
+        return Optional.ofNullable(entityManager.find(persistentClass, id));
     }
 
     public List<T> findAll() {
