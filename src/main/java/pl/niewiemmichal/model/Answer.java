@@ -1,12 +1,11 @@
 package pl.niewiemmichal.model;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
+@Data
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -28,7 +27,6 @@ public class Answer {
     @ManyToOne
     private Question question;
 
-    @NonNull
-    @ManyToOne
-    private Respondent respondent;
+    @NotNull
+    private Integer respondent;
 }
