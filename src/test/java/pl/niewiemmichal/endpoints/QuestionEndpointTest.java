@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Question;
 import pl.niewiemmichal.repository.Repository;
@@ -98,18 +99,18 @@ public class QuestionEndpointTest {
         assertThat(actual).isEqualTo(question);
     }
 
-    @Test
-    public void shouldCreateQuestion() {
+    @Test(expected = ResourceConflictException.class)
+    public void shouldReturnResourceConflictException() {
         //given
-        given(questionRepository.findById(4L)).willReturn(Optional.empty());
-        given(questionRepository.save(question)).willReturn(question);
+        given(questionRepository.findById(6L)).willReturn(Optional.of(question));
 
         //when
-        Question actual = questionEndpoint.updateQuestion(4L, question);
+        Question diffQuestion= new Question("contents", false);
+        diffQuestion.setId(10L);
+        questionEndpoint.updateQuestion(6L, diffQuestion);
 
         //then
-        verify(questionRepository).save(question);
-        assertThat(actual).isEqualTo(question);
+        //expect exception
     }
 
     @Test
