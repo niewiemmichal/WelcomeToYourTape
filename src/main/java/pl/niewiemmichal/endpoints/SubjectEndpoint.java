@@ -49,9 +49,9 @@ public class SubjectEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Subject updateSubject(@PathParam("id") Long id, @Valid Subject subject) {
         if(!subjectRepository.findById(id).isPresent())
-            throw new ResourceDoesNotExistException("Question", "id", id.toString());
+            throw new ResourceDoesNotExistException("Subject", "id", id.toString());
         else if(subject.getId() != null && !(id.equals(subject.getId())))
-            throw new ResourceConflictException("Question", "id", id.toString(), subject.getId().toString());
+            throw new ResourceConflictException("Subject", "id", id.toString(), subject.getId().toString());
         else {
             subject.setId(id);
             return subjectRepository.update(subject);
