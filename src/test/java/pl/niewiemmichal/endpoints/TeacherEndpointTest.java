@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.AcademicDegree;
 import pl.niewiemmichal.model.Teacher;
@@ -99,18 +100,18 @@ public class TeacherEndpointTest {
         assertThat(actual).isEqualTo(teacher);
     }
 
-    @Test
-    public void shouldCreateTeacher() {
+    @Test(expected = ResourceConflictException.class)
+    public void shouldReturnResourceConflictException() {
         //given
-        given(teacherRepository.findById(4L)).willReturn(Optional.empty());
-        given(teacherRepository.save(teacher)).willReturn(teacher);
+        given(teacherRepository.findById(6L)).willReturn(Optional.of(teacher));
 
         //when
-        Teacher actual = teacherEndpoint.updateTeacher(4L, teacher);
+        Teacher diffTeacher = new Teacher("New", "Teacher", AcademicDegree.DOCTORAL);
+        diffTeacher.setId(10L);
+        teacherEndpoint.updateTeacher(6L, diffTeacher);
 
         //then
-        verify(teacherRepository).save(teacher);
-        assertThat(actual).isEqualTo(teacher);
+        //expect exception
     }
 
     @Test

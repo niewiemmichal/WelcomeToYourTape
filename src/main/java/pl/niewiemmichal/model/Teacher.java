@@ -1,9 +1,6 @@
 package pl.niewiemmichal.model;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+@Data
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -35,8 +33,6 @@ public class Teacher {
     private String surname;
 
     @NonNull
-    @NotBlank
-    @Size(max = 64)
     @Column(nullable = false)
     private AcademicDegree degree;
 }
