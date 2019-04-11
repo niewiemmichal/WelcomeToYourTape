@@ -28,5 +28,5 @@ public class Answer {
     private Question question;
 
     @NotNull
-    private Integer respondent;
+    private String respondent;
 }

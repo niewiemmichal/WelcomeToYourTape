@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
 import java.util.List;
 
 @Path("/answers")
@@ -39,9 +40,9 @@ public class AnswerEndpoint {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Answer addAnswer(@Valid Answer answer) {
-        return answerRepository.save(answer);
+    public void addAnswer(@Valid Answer[] answers) {
+        Arrays.stream(answers).forEach(System.out::println);
+        Arrays.stream(answers).forEach(answerRepository::save);
     }
 
     @PUT

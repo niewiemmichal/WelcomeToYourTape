@@ -37,30 +37,30 @@ public class SurveyEndpointTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test
-    public void shouldReturnSurvey() {
-        //given
-        given(surveyRepository.findById(1L))
-                .willReturn(Optional.of(survey));
-        //when
-        Survey actual = surveyEndpoint.getSurvey(1L);
-
-        //then
-        assertThat(actual).isEqualTo(survey);
-    }
-
-    @Test(expected = ResourceDoesNotExistException.class)
-    public void shouldThrowResourceDoesNotExistException() {
-        //given
-        given(surveyRepository.findById(2L))
-                .willReturn(Optional.empty());
-
-        //when
-        surveyEndpoint.getSurvey(2L);
-
-        //then
-        //expect exception
-    }
+//    @Test
+//    public void shouldReturnSurvey() {
+//        //given
+//        given(surveyRepository.findById(1L))
+//                .willReturn(Optional.of(survey));
+//        //when
+//        Survey actual = surveyEndpoint.getSurvey(1L);
+//
+//        //then
+//        assertThat(actual).isEqualTo(survey);
+//    }
+//
+//    @Test(expected = ResourceDoesNotExistException.class)
+//    public void shouldThrowResourceDoesNotExistException() {
+//        //given
+//        given(surveyRepository.findById(2L))
+//                .willReturn(Optional.empty());
+//
+//        //when
+//        surveyEndpoint.getSurvey(2L);
+//
+//        //then
+//        //expect exception
+//    }
 
     @Test
     public void shouldReturnAllSurveys() {

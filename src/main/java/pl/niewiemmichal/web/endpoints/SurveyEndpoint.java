@@ -24,11 +24,15 @@ public class SurveyEndpoint {
     public SurveyEndpoint() {}
 
     @GET
-    @Path ("/{id}")
+    @Path ("/{subjectId}/{teacherId}")
     @Produces (MediaType.APPLICATION_JSON)
-    public Survey getSurvey(@PathParam ("id") Long id) {
-        return surveyRepository.findById(id)
-                .orElseThrow(() -> new ResourceDoesNotExistException("Survey", "id", id.toString()));
+    public Survey getSurvey(@PathParam ("subjectId") Long subjectId, @PathParam ("teacherId") Long teacherId) {
+        return surveyRepository.findAll().stream()
+                .filter(s -> s.getSubject().getId().equals(subjectId))
+                .filter(s -> s.getTeacher().getId().equals(teacherId))
+                .findFirst().orElseThrow(() -> new ResourceDoesNotExistException("Survey", "subjectId and teacherId",
+                        subjectId.toString() + " and " + teacherId.toString())
+                );
     }
 
     @GET
