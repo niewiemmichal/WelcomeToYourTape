@@ -1,7 +1,9 @@
-package pl.niewiemmichal.endpoints;
+package pl.niewiemmichal.web.endpoints;
 
 import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
+import pl.niewiemmichal.model.Subject;
+import pl.niewiemmichal.model.Survey;
 import pl.niewiemmichal.model.Teacher;
 import pl.niewiemmichal.repository.Repository;
 
@@ -11,15 +13,19 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Path ("/teachers")
 public class TeacherEndpoint {
 
     private Repository<Teacher, Long> teacherRepository;
+    private Repository<Survey, Long> surveyRepository;
 
     @Inject
-    public TeacherEndpoint(Repository<Teacher, Long> teacherRepository) {
+    public TeacherEndpoint(Repository<Teacher, Long> teacherRepository,
+                           Repository<Survey, Long> surveyRepository) {
         this.teacherRepository = teacherRepository;
+        this.surveyRepository = surveyRepository;
     }
 
     public TeacherEndpoint() {}
@@ -37,6 +43,17 @@ public class TeacherEndpoint {
     public List<Teacher> getAllTeachers() {
         return teacherRepository.findAll();
     }
+
+    @Path("/subject/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Teacher> getAllTeachersBySubject(@PathParam("id") Long id) {
+        return surveyRepository.findAll().stream()
+                .filter(s -> s.getSubject().getId().equals(id))
+                .map(Survey::getTeacher)
+                .collect(Collectors.toList());
+    }
+
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

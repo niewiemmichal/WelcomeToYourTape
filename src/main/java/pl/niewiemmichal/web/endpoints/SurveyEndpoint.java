@@ -1,4 +1,4 @@
-package pl.niewiemmichal.endpoints;
+package pl.niewiemmichal.web.endpoints;
 
 import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;

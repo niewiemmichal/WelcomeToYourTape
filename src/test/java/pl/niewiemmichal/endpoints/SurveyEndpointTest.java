@@ -10,6 +10,7 @@ import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.*;
 import pl.niewiemmichal.repository.Repository;
+import pl.niewiemmichal.web.endpoints.SurveyEndpoint;
 
 import java.util.List;
 import java.util.Optional;

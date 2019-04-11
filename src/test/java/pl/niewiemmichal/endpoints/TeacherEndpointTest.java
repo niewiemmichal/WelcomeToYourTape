@@ -9,8 +9,11 @@ import org.mockito.MockitoAnnotations;
 import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.AcademicDegree;
+import pl.niewiemmichal.model.Subject;
+import pl.niewiemmichal.model.Survey;
 import pl.niewiemmichal.model.Teacher;
 import pl.niewiemmichal.repository.Repository;
+import pl.niewiemmichal.web.endpoints.TeacherEndpoint;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,9 @@ public class TeacherEndpointTest {
 
     @Mock
     private Repository<Teacher, Long> teacherRepository;
+
+    @Mock
+    private Repository<Survey, Long> surveyRepository;
 
     @InjectMocks
     private TeacherEndpoint teacherEndpoint;
@@ -71,6 +77,27 @@ public class TeacherEndpointTest {
 
         //then
         assertThat(actual).containsExactlyElementsOf(teachers);
+    }
+
+    @Test
+    public void shouldReturnAllTeachersBySubject() {
+        //given
+        Subject subject = new Subject("name", 1997, 6);
+        subject.setId(100L);
+        Subject anotherSubject = new Subject("another", 1997, 6);
+        anotherSubject.setId(101L);
+        Teacher teacher = new Teacher("name", "surname", AcademicDegree.DOCTORAL);
+        Survey survey = new Survey(teacher, subject);
+        Survey anotherSurvey = new Survey(teacher, anotherSubject);
+        List<Survey> surveys = Lists.newArrayList(survey, survey, anotherSurvey);
+        given(surveyRepository.findAll()).willReturn(surveys);
+
+        //when
+        List<Teacher> actual = teacherEndpoint.getAllTeachersBySubject(100L);
+
+        //then
+        List<Teacher> expected = Lists.newArrayList(teacher, teacher);
+        assertThat(actual).containsExactlyElementsOf(expected);
     }
 
     @Test
