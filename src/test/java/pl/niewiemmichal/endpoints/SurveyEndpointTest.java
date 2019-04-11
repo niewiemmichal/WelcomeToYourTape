@@ -101,20 +101,6 @@ public class SurveyEndpointTest {
         assertThat(actual).isEqualTo(survey);
     }
 
-    @Test
-    public void shouldCreateSurvey() {
-        //given
-        given(surveyRepository.findById(4L)).willReturn(Optional.empty());
-        given(surveyRepository.save(survey)).willReturn(survey);
-
-        //when
-        Survey actual = surveyEndpoint.updateSurvey(4L, survey);
-
-        //then
-        verify(surveyRepository).save(survey);
-        assertThat(actual).isEqualTo(survey);
-    }
-
     @Test(expected = ResourceConflictException.class)
     public void shouldReturnResourceConflictException() {
         //given
@@ -123,10 +109,10 @@ public class SurveyEndpointTest {
         //when
         Teacher teacher = new Teacher("New", "Teacher", AcademicDegree.DOCTORAL);
         Subject subject = new Subject("subject", 2019, 2);
-        Survey diffSubject = new Survey(teacher, subject);
-        //Survey diffQuestion= new Survey("contents", false);
-        diffSubject.setId(10L);
-        surveyRepository.updateSurvey(6L, diffSubject);
+        Survey diffSurvey = new Survey(teacher, subject);
+
+        diffSurvey.setId(10L);
+        surveyEndpoint.updateSurvey(6L, diffSurvey);
 
         //then
         //expect exception
