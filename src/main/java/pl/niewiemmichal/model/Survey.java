@@ -13,11 +13,11 @@ public class Survey {
     private Long id;
 
     @NonNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Teacher teacher;
 
     @NonNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Subject subject;
 }
 
