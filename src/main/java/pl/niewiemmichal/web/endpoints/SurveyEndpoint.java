@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Arrays;
 import java.util.List;
 
 @Path("/surveys")
@@ -46,6 +47,12 @@ public class SurveyEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Survey addSurvey(@Valid Survey survey) {
         return surveyRepository.save(survey);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void addSurvey( @Valid Survey[] surveys ){
+        Arrays.stream(surveys).forEach(surveyRepository::save);
     }
 
     @PUT
