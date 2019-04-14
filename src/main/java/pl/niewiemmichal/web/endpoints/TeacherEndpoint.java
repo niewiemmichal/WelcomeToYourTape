@@ -2,17 +2,15 @@ package pl.niewiemmichal.web.endpoints;
 
 import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
-import pl.niewiemmichal.model.Subject;
 import pl.niewiemmichal.model.Survey;
 import pl.niewiemmichal.model.Teacher;
-import pl.niewiemmichal.repository.Repository;
+import pl.niewiemmichal.repositories.Repository;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Path ("/teachers")

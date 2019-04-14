@@ -1,4 +1,4 @@
-package pl.niewiemmichal.repository;
+package pl.niewiemmichal.repositories;
 
 import java.io.Serializable;
 import java.util.List;

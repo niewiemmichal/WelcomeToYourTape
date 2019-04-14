@@ -5,10 +5,9 @@ import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Subject;
 import pl.niewiemmichal.model.Survey;
 import pl.niewiemmichal.model.Teacher;
-import pl.niewiemmichal.repository.Repository;
-import pl.niewiemmichal.repository.SubjectRepository;
-import pl.niewiemmichal.repository.SurveyRepository;
-import pl.niewiemmichal.repository.TeacherRepository;
+import pl.niewiemmichal.repositories.SubjectRepository;
+import pl.niewiemmichal.repositories.SurveyRepository;
+import pl.niewiemmichal.repositories.TeacherRepository;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -63,19 +62,17 @@ public class SurveyEndpoint {
     @Path("/burst")
     @Consumes(MediaType.APPLICATION_JSON)
     public void addSurvey( @Valid Survey[] surveys ){
-//        TeateacherRepository.findAll();
-//        surveyRepository.findAll();
-//        Arrays.stream(surveys).forEach(survey -> {
-//            if(survey.getTeacher().getId() == null && !addedTeachers.contains(survey.getTeacher())) {
-//                Teacher saved = teacherRepository.save(survey.getTeacher());
-//                addedTeachers.add(saved);
-//                survey.getTeacher().setId(saved.getId());
-//            }
-//            if(survey.getSubject().getId() == null && !addedSubjects.contains(survey.getSubject())) {
-//                addedSubjects.add(subjectRepository.save(survey.getSubject()));
-//            }
-//            surveyRepository.save(survey);
-//        });
+        Arrays.stream(surveys).forEach(survey -> {
+            Optional<Long> teacherId = teacherRepository.getId(survey.getTeacher());
+            if(teacherId.isPresent()) survey.getTeacher().setId(teacherId.get());
+            else survey.getTeacher().setId(teacherRepository.save(survey.getTeacher()).getId());
+
+            Optional<Long> subjectId = subjectRepository.getId(survey.getSubject());
+            if(subjectId.isPresent()) survey.getSubject().setId(subjectId.get());
+            else survey.getSubject().setId(subjectRepository.save(survey.getSubject()).getId());
+
+            surveyRepository.save(survey);
+        });
     }
 
     @PUT

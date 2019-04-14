@@ -3,8 +3,7 @@ package pl.niewiemmichal.web.endpoints;
 import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Answer;
-import pl.niewiemmichal.repository.AnswerRepository;
-import pl.niewiemmichal.repository.Repository;
+import pl.niewiemmichal.repositories.AnswerRepository;
 
 import javax.inject.Inject;
 import javax.validation.Valid;

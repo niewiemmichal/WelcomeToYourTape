@@ -9,8 +9,7 @@ import org.mockito.MockitoAnnotations;
 import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Subject;
-import pl.niewiemmichal.repository.Repository;
-import pl.niewiemmichal.repository.SubjectRepository;
+import pl.niewiemmichal.repositories.SubjectRepository;
 import pl.niewiemmichal.web.endpoints.SubjectEndpoint;
 
 import java.util.List;

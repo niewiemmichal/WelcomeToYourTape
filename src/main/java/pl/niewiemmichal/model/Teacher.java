@@ -24,13 +24,13 @@ public class Teacher {
     @NonNull
     @NotBlank
     @Size(max = 64)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 64)
     private String name;
 
     @NonNull
     @NotBlank
     @Size(max = 64)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 64)
     private String surname;
 
     @NonNull

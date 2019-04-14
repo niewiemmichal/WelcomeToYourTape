@@ -1,4 +1,4 @@
-package pl.niewiemmichal.repository;
+package pl.niewiemmichal.repositories;
 
 import pl.niewiemmichal.model.Survey;
 

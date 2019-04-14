@@ -7,10 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
-import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.*;
-import pl.niewiemmichal.repository.Repository;
-import pl.niewiemmichal.repository.SurveyRepository;
+import pl.niewiemmichal.repositories.SurveyRepository;
 import pl.niewiemmichal.web.endpoints.SurveyEndpoint;
 
 import java.util.List;

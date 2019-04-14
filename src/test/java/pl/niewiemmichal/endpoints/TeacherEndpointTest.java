@@ -12,9 +12,8 @@ import pl.niewiemmichal.model.AcademicDegree;
 import pl.niewiemmichal.model.Subject;
 import pl.niewiemmichal.model.Survey;
 import pl.niewiemmichal.model.Teacher;
-import pl.niewiemmichal.repository.Repository;
-import pl.niewiemmichal.repository.SurveyRepository;
-import pl.niewiemmichal.repository.TeacherRepository;
+import pl.niewiemmichal.repositories.SurveyRepository;
+import pl.niewiemmichal.repositories.TeacherRepository;
 import pl.niewiemmichal.web.endpoints.TeacherEndpoint;
 
 import java.util.List;
