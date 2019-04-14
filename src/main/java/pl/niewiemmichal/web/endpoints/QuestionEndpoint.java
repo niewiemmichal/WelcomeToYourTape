@@ -4,6 +4,7 @@ import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Question;
 import pl.niewiemmichal.model.Teacher;
+import pl.niewiemmichal.repository.QuestionRepository;
 import pl.niewiemmichal.repository.Repository;
 
 import javax.inject.Inject;
@@ -15,10 +16,10 @@ import java.util.List;
 @Path("/questions")
 public class QuestionEndpoint {
 
-    private Repository<Question, Long> questionRepository;
+    private QuestionRepository questionRepository;
 
     @Inject
-    public QuestionEndpoint(Repository<Question, Long> questionRepository) {
+    public QuestionEndpoint(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
     }
 

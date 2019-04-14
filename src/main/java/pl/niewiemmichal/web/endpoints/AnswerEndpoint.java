@@ -3,6 +3,7 @@ package pl.niewiemmichal.web.endpoints;
 import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Answer;
+import pl.niewiemmichal.repository.AnswerRepository;
 import pl.niewiemmichal.repository.Repository;
 
 import javax.inject.Inject;
@@ -15,10 +16,10 @@ import java.util.List;
 @Path("/answers")
 public class AnswerEndpoint {
 
-    private Repository<Answer, Long> answerRepository;
+    private AnswerRepository answerRepository;
 
     @Inject
-    public AnswerEndpoint(Repository<Answer, Long> answerRepository) {
+    public AnswerEndpoint(AnswerRepository answerRepository) {
         this.answerRepository = answerRepository;
     }
 
@@ -41,7 +42,6 @@ public class AnswerEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public void addAnswer(@Valid Answer[] answers) {
-        Arrays.stream(answers).forEach(System.out::println);
         Arrays.stream(answers).forEach(answerRepository::save);
     }
 

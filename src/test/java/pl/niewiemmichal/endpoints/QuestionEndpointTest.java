@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Question;
+import pl.niewiemmichal.repository.QuestionRepository;
 import pl.niewiemmichal.repository.Repository;
 import pl.niewiemmichal.web.endpoints.QuestionEndpoint;
 
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.verify;
 public class QuestionEndpointTest {
 
     @Mock
-    private Repository<Question, Long> questionRepository;
+    private QuestionRepository questionRepository;
 
     @InjectMocks
     private QuestionEndpoint questionEndpoint;

@@ -4,6 +4,7 @@ import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Subject;
 import pl.niewiemmichal.repository.Repository;
+import pl.niewiemmichal.repository.SubjectRepository;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -14,10 +15,10 @@ import java.util.List;
 @Path("/subjects")
 public class SubjectEndpoint {
 
-    private Repository<Subject, Long> subjectRepository;
+    private SubjectRepository subjectRepository;
 
     @Inject
-    public SubjectEndpoint(Repository<Subject, Long> subjectRepository) {
+    public SubjectEndpoint(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
     }
 

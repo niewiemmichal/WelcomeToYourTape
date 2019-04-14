@@ -10,6 +10,7 @@ import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.*;
 import pl.niewiemmichal.repository.Repository;
+import pl.niewiemmichal.repository.SurveyRepository;
 import pl.niewiemmichal.web.endpoints.SurveyEndpoint;
 
 import java.util.List;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.verify;
 public class SurveyEndpointTest {
 
     @Mock
-    private Repository<Survey, Long> surveyRepository;
+    private SurveyRepository surveyRepository;
 
     @InjectMocks
     private SurveyEndpoint surveyEndpoint;

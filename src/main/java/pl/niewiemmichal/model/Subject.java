@@ -15,6 +15,7 @@ import javax.validation.constraints.Size;
 @Entity
 public class Subject {
 
+    @EqualsAndHashCode.Exclude
     @Id
     @GeneratedValue
     private Long id;

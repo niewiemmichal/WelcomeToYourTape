@@ -9,19 +9,23 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-abstract class GenericRepository<T, ID extends Serializable> {
+abstract class GenericJpaRepository<T, ID extends Serializable> {
 
     @PersistenceContext(unitName="niewiemmichal")
     protected EntityManager entityManager;
 
     private Class<T> persistentClass;
 
-    GenericRepository(Class<T> persistentClass) {
+    GenericJpaRepository(Class<T> persistentClass) {
         this.persistentClass = persistentClass;
     }
 
     public Optional<T> findById(ID id) {
         return Optional.ofNullable(entityManager.find(persistentClass, id));
+    }
+
+    public List<T> findWithQuery(String query) {
+        return entityManager.createNativeQuery(query, persistentClass).getResultList();
     }
 
     public List<T> findAll() {

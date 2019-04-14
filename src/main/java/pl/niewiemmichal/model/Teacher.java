@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 @Entity
 public class Teacher {
 
+    @EqualsAndHashCode.Exclude
     @Id
     @GeneratedValue
     private Long id;

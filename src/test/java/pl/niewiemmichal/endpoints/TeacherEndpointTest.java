@@ -13,6 +13,8 @@ import pl.niewiemmichal.model.Subject;
 import pl.niewiemmichal.model.Survey;
 import pl.niewiemmichal.model.Teacher;
 import pl.niewiemmichal.repository.Repository;
+import pl.niewiemmichal.repository.SurveyRepository;
+import pl.niewiemmichal.repository.TeacherRepository;
 import pl.niewiemmichal.web.endpoints.TeacherEndpoint;
 
 import java.util.List;
@@ -26,10 +28,10 @@ import static org.mockito.Mockito.verify;
 public class TeacherEndpointTest {
 
     @Mock
-    private Repository<Teacher, Long> teacherRepository;
+    private TeacherRepository teacherRepository;
 
     @Mock
-    private Repository<Survey, Long> surveyRepository;
+    private SurveyRepository surveyRepository;
 
     @InjectMocks
     private TeacherEndpoint teacherEndpoint;
