@@ -50,6 +50,7 @@ public class SurveyEndpoint {
     }
 
     @POST
+    @Path("/burst")
     @Consumes(MediaType.APPLICATION_JSON)
     public void addSurvey( @Valid Survey[] surveys ){
         Arrays.stream(surveys).forEach(surveyRepository::save);
