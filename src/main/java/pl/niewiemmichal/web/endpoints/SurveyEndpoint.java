@@ -37,12 +37,9 @@ public class SurveyEndpoint {
     @Path ("/{subjectId}/{teacherId}")
     @Produces (MediaType.APPLICATION_JSON)
     public Survey getSurvey(@PathParam ("subjectId") Long subjectId, @PathParam ("teacherId") Long teacherId) {
-        return surveyRepository.findAll().stream()
-                .filter(s -> s.getSubject().getId().equals(subjectId))
-                .filter(s -> s.getTeacher().getId().equals(teacherId))
-                .findFirst().orElseThrow(() -> new ResourceDoesNotExistException("Survey", "subjectId and teacherId",
-                        subjectId.toString() + " and " + teacherId.toString())
-                );
+        return surveyRepository.findByTeacherIdAndSubjectId(teacherId, subjectId)
+                .orElseThrow(() -> new NotFoundException("Survey for teacher with id=" + teacherId +
+                        " and subject with id=" + subjectId + " does not exist"));
     }
 
     @GET
@@ -59,20 +56,29 @@ public class SurveyEndpoint {
     }
 
     @POST
-    @Path("/burst")
+    @Path("/burst/teacher")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addSurvey( @Valid Survey[] surveys ){
-        Arrays.stream(surveys).forEach(survey -> {
-            Optional<Long> teacherId = teacherRepository.getId(survey.getTeacher());
-            if(teacherId.isPresent()) survey.getTeacher().setId(teacherId.get());
-            else survey.getTeacher().setId(teacherRepository.save(survey.getTeacher()).getId());
+    public void addSurveysAndTeacher( @Valid Survey[] surveys ){
+        if(surveys.length > 0) {
+            final Teacher teacher = teacherRepository.save(surveys[0].getTeacher());
+            Arrays.stream(surveys).forEach(survey -> {
+                survey.setTeacher(teacher);
+                surveyRepository.save(survey);
+            });
+        }
+    }
 
-            Optional<Long> subjectId = subjectRepository.getId(survey.getSubject());
-            if(subjectId.isPresent()) survey.getSubject().setId(subjectId.get());
-            else survey.getSubject().setId(subjectRepository.save(survey.getSubject()).getId());
-
-            surveyRepository.save(survey);
-        });
+    @POST
+    @Path("/burst/subject")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void addSurveysAndSubject( @Valid Survey[] surveys ){
+        if(surveys.length > 0) {
+            final Subject subject = subjectRepository.save(surveys[0].getSubject());
+            Arrays.stream(surveys).forEach(survey -> {
+                survey.setSubject(subject);
+                surveyRepository.save(survey);
+            });
+        }
     }
 
     @PUT
@@ -81,9 +87,9 @@ public class SurveyEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Survey updateSurvey(@PathParam("id") Long id, @Valid Survey survey) {
         if(!surveyRepository.findById(id).isPresent())
-            throw new ResourceDoesNotExistException("Survey", "id", id.toString());
+            throw new NotFoundException("Survey with id=" + id + " does not exist");
         else if(survey.getId() != null && !(id.equals(survey.getId())))
-            throw new ResourceConflictException("Survey", "id", id.toString(), survey.getId().toString());
+            throw new BadRequestException("Survey id does not equal id provided in uri");
         else {
             survey.setId(id);
             return surveyRepository.update(survey);

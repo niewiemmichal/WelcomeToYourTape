@@ -1,5 +1,8 @@
 package pl.niewiemmichal.commons.exceptions;
 
+import javax.ejb.ApplicationException;
+
+@ApplicationException
 public class ResourceDoesNotExistException extends RuntimeException {
 
     private final String resource;

@@ -2,6 +2,7 @@ package pl.niewiemmichal.repositories;
 
 import pl.niewiemmichal.model.Teacher;
 
+import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;

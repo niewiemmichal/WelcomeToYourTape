@@ -2,10 +2,7 @@ package pl.niewiemmichal.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -13,6 +10,7 @@ import javax.validation.constraints.Size;
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames={"name", "year", "semester"}))
 public class Subject {
 
     @EqualsAndHashCode.Exclude

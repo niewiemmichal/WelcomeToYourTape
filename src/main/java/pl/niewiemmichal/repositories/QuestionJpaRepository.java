@@ -2,6 +2,7 @@ package pl.niewiemmichal.repositories;
 
 import pl.niewiemmichal.model.Question;
 
+import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 
 @Stateless

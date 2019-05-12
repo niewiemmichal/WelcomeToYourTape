@@ -7,6 +7,8 @@ import pl.niewiemmichal.model.Teacher;
 import pl.niewiemmichal.repositories.Repository;
 
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
+
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -52,11 +54,12 @@ public class TeacherEndpoint {
                 .collect(Collectors.toList());
     }
 
-
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Teacher addTeacher(@Valid Teacher teacher) {
+        if(teacher.getId() != null)
+            throw new BadRequestException("Id should not be provided. It will be auto-generated");
         return teacherRepository.save(teacher);
     }
 

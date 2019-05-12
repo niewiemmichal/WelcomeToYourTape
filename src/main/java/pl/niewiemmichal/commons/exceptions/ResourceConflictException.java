@@ -1,17 +1,20 @@
 package pl.niewiemmichal.commons.exceptions;
 
+import javax.ejb.ApplicationException;
+
+@ApplicationException
 public class ResourceConflictException extends RuntimeException {
 
     private String resource;
-    private String valueName;
+    private String field;
     private String firstValue;
     private String secondValue;
 
-    public ResourceConflictException(String resource, String valueName, String firstValue, String secondValue) {
-        super("Got " + resource + " with conflicting " + valueName + ". Value: " + firstValue + //
+    public ResourceConflictException(String resource, String field, String firstValue, String secondValue) {
+        super("Got " + resource + " with conflicting " + field + ". Value: " + firstValue + //
                 " is different from " + secondValue);
         this.resource = resource;
-        this.valueName = valueName;
+        this.field = field;
         this.firstValue = firstValue;
         this.secondValue = secondValue;
     }
@@ -21,7 +24,7 @@ public class ResourceConflictException extends RuntimeException {
     }
 
     public String getValueName() {
-        return valueName;
+        return field;
     }
 
     public String getFirstValue() {
