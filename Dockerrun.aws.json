@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "mpadula/welcome-to-your-tape",
+    "Name": "mpadula/welcome-to-your-tape:__VERSION__",
     "Update": "true"
   },
   "Ports": [

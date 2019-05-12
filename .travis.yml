@@ -1,0 +1,28 @@
+language: java
+services:
+  - docker
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - "$HOME/.gradle/caches/"
+    - "$HOME/.gradle/wrapper/"
+
+before_deploy:
+  - "docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD"
+  - "docker build -t mpadula/welcome-to-your-tape:${TRAVIS_BUILD_NUMBER} ."
+  - "docker push mpadula/welcome-to-your-tape:${TRAVIS_BUILD_NUMBER}"
+  - 'sed -i -e "s/__VERSION__/${TRAVIS_BUILD_NUMBER}/g" Dockerrun.aws.json'
+deploy:
+  provider: "elasticbeanstalk"
+  region: "eu-central-1"
+  app: "welcome-to-your-tape"
+  env: "stage"
+  file: "Dockerrun.aws.json"
+  skip_cleanup: true
+  wait_until_deployed: true
+  bucket_name: $ARTIFACTS_BUCKET
+  access_key_id: $ARTIFACTS_KEY
+  secret_access_key: $ARTIFACTS_SECRET

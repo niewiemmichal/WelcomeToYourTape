@@ -2,6 +2,7 @@ package pl.niewiemmichal.endpoints;
 
 import com.google.common.collect.Lists;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,6 +20,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@Ignore
 public class SurveyEndpointTest {
 
     @Mock
