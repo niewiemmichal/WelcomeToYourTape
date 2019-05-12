@@ -20,7 +20,7 @@ deploy:
   region: "eu-central-1"
   app: "welcome-to-your-tape"
   env: "stage"
-  file: "Dockerrun.aws.json"
+  zip_file: "Dockerrun.aws.json"
   skip_cleanup: true
   wait_until_deployed: true
   bucket_name: $ARTIFACTS_BUCKET
