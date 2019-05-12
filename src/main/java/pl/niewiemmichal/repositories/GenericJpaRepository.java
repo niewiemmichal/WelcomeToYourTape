@@ -15,7 +15,7 @@ import java.util.Optional;
 
 abstract class GenericJpaRepository<T, ID extends Serializable> {
 
-    @PersistenceContext(unitName="niewiemmichal")
+    @PersistenceContext(unitName="welcometoyourtape")
     protected EntityManager entityManager;
 
     private Class<T> persistentClass;

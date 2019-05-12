@@ -1,7 +1,4 @@
 #!/bin/bash
-
-set -e
-
 MYSQL_VERSION=8.0.16
 JBOSS_CLI=$JBOSS_HOME/bin/jboss-cli.sh
 MYSQL_JAR=mysql-connector-java-$MYSQL_VERSION.jar
