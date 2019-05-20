@@ -6,6 +6,8 @@ import javax.ejb.Stateless;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
+
 import java.util.Optional;
 
 @Stateless
@@ -13,16 +15,10 @@ public class SurveyJpaRepository extends GenericJpaRepository<Survey, Long> impl
     SurveyJpaRepository() { super(Survey.class); }
 
     @Override
+    @Transactional
     public Optional<Survey> findByTeacherIdAndSubjectId(Long teacherId, Long subjectId) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Survey> query = builder.createQuery(Survey.class);
-        Root<Survey> root = query.from(Survey.class);
-        query.select(root)
-                .where(builder.and(
-                        builder.equal(root.get("subject_id"), subjectId),
-                        builder.equal(root.get("teacher_id"), teacherId)
-                ));
-
-        return entityManager.createQuery(query).getResultStream().findAny();
+        return findAll().stream()
+                .filter(s -> s.getTeacher().getId().equals(teacherId))
+                .filter(s -> s.getSubject().getId().equals(subjectId)).findFirst();
     }
 }

@@ -34,6 +34,14 @@ public class SurveyEndpoint {
     public SurveyEndpoint() {}
 
     @GET
+    @Path ("/{id}")
+    @Produces (MediaType.APPLICATION_JSON)
+    public Survey getSurvey(@PathParam ("subjectId") Long id) {
+        return surveyRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Survey with id=" + id + " does not exist"));
+    }
+
+    @GET
     @Path ("/{subjectId}/{teacherId}")
     @Produces (MediaType.APPLICATION_JSON)
     public Survey getSurvey(@PathParam ("subjectId") Long subjectId, @PathParam ("teacherId") Long teacherId) {

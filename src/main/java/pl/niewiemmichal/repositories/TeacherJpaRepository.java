@@ -15,14 +15,4 @@ import java.util.Optional;
 public class TeacherJpaRepository
         extends GenericJpaRepository<Teacher, Long> implements TeacherRepository {
     TeacherJpaRepository() {super(Teacher.class);}
-
-    @Override
-    public Optional<Long> getId(Teacher teacher) {
-        TypedQuery<Teacher> query = entityManager.createQuery("select t from Teacher t " +
-                "where t.name = :name and t.surname = :surname and t.degree = :degree", Teacher.class);
-        query.setParameter("name", teacher.getName());
-        query.setParameter("surname", teacher.getSurname());
-        query.setParameter("degree", teacher.getDegree());
-        return query.getResultStream().findAny().map(Teacher::getId);
-    }
 }

@@ -13,7 +13,7 @@ until `${JBOSS_CLI} -c ":read-attribute(name=server-state)" 2> /dev/null | grep 
 done
 
 echo "[INFO] Downloading MySQL driver"
-curl --location --output /tmp/$MYSQL_JAR --url $MYSQL_MAVEN
+curl --silent --location --output /tmp/$MYSQL_JAR --url $MYSQL_MAVEN
 
 echo "[INFO] Deploying MySQL driver"
 ${JBOSS_CLI} --connect --command="deploy /tmp/$MYSQL_JAR"
@@ -25,18 +25,19 @@ ${JBOSS_CLI} --connect --command="data-source add \
     --user-name=$DB_USERNAME \
     --password=$DB_PASSWORD \
     --driver-name=$MYSQL_JAR \
-    --connection-url=jdbc:mysql://${DB_URI}/${DB_NAME} \
-    --use-ccm=false \
-    --max-pool-size=25 \
-    --blocking-timeout-wait-millis=5000 \
-    --enabled=true"
+    --connection-url=jdbc:mysql://${DB_URI}/${DB_NAME}?autoReconnect=true
+    --check-valid-connection-sql=\"SELECT 1\" \
+    --background-validation=true \
+    --background-validation-millis=60000 \
+    --flush-strategy=IdleConnections \
+    --min-pool-size=10 --max-pool-size=50  --pool-prefill=false"
 
-echo "[INFO] Deploying application"
+echo "[INFO] Shutting down WildFly"
+${JBOSS_CLI} --connect --command=":shutdown"
+
+echo "[INFO] Preparing for application deployment"
 cp /tmp/app.war $JBOSS_HOME/standalone/deployments/app.war
-
-echo "[INFO] Shutting down WildFly and Cleaning up" && \
-${JBOSS_CLI} --connect --command=":shutdown" && \
-rm -rf $JBOSS_HOME/standalone/configuration/standalone_xml_history/ $JBOSS_HOME/standalone/log/* && \
+rm -rf $JBOSS_HOME/standalone/configuration/standalone_xml_history/ $JBOSS_HOME/standalone/log/*
 rm -f /tmp/*.jar
 
 echo "[INFO] Restarting WildFly"

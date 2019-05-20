@@ -38,6 +38,13 @@ public class AnswerEndpoint {
         return answerRepository.findAll();
     }
 
+    @GET
+    @Path("/s/{surveyId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Answer> getAllSurveyAnswers(@PathParam("surveyId") Long surveyId) {
+        return answerRepository.findBySurveyId(surveyId);
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public void addAnswer(@Valid Answer[] answers) {
