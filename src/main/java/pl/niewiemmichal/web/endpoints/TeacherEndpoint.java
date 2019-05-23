@@ -1,13 +1,13 @@
 package pl.niewiemmichal.web.endpoints;
 
-import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Survey;
 import pl.niewiemmichal.model.Teacher;
-import pl.niewiemmichal.repositories.Repository;
+import pl.niewiemmichal.repositories.AnswerRepository;
+import pl.niewiemmichal.repositories.SurveyRepository;
+import pl.niewiemmichal.repositories.TeacherRepository;
 
 import javax.inject.Inject;
-import javax.persistence.PersistenceException;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -18,14 +18,17 @@ import java.util.stream.Collectors;
 @Path ("/teachers")
 public class TeacherEndpoint {
 
-    private Repository<Teacher, Long> teacherRepository;
-    private Repository<Survey, Long> surveyRepository;
+    private TeacherRepository teacherRepository;
+    private SurveyRepository surveyRepository;
+    private AnswerRepository answerRepository;
 
     @Inject
-    public TeacherEndpoint(Repository<Teacher, Long> teacherRepository,
-                           Repository<Survey, Long> surveyRepository) {
+    public TeacherEndpoint(TeacherRepository teacherRepository,
+                           SurveyRepository surveyRepository,
+                           AnswerRepository answerRepository) {
         this.teacherRepository = teacherRepository;
         this.surveyRepository = surveyRepository;
+        this.answerRepository = answerRepository;
     }
 
     public TeacherEndpoint() {}
@@ -58,8 +61,7 @@ public class TeacherEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Teacher addTeacher(@Valid Teacher teacher) {
-        if(teacher.getId() != null)
-            throw new BadRequestException("Id should not be provided. It will be auto-generated");
+        teacher.setId(null);
         return teacherRepository.save(teacher);
     }
 
@@ -68,20 +70,37 @@ public class TeacherEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Teacher updateTeacher(@PathParam("id") Long id, @Valid Teacher teacher) {
-        if(!teacherRepository.findById(id).isPresent())
-            throw new ResourceDoesNotExistException("Teacher", "id", id.toString());
-        else if(teacher.getId() != null && !(id.equals(teacher.getId())))
-            throw new ResourceConflictException("Teacher", "id", id.toString(), teacher.getId().toString());
-        else {
-            teacher.setId(id);
-            return teacherRepository.update(teacher);
-        }
+        return teacherRepository.findById(id)
+                .map(t -> updateTeacher(t, teacher))
+                .orElseGet(() -> addTeacher(teacher));
     }
 
     @DELETE
     @Path("/{id}")
     public void deleteTeacher(@PathParam("id") Long id) {
         teacherRepository.findById(id)
-                .ifPresent(q -> teacherRepository.delete(q));
+                .ifPresent(this::deleteTeacherAndSurveys);
+    }
+
+    private void throwIfHasAnswers(Teacher teacher, String message) {
+        answerRepository.findBySurvey_TeacherId(teacher.getId())
+                .findAny()
+                .ifPresent(a -> {
+                    throw new BadRequestException(message);
+                });
+    }
+
+    private void deleteTeacherAndSurveys(Teacher teacher) {
+        throwIfHasAnswers(teacher, "Cannot delete teacher");
+        teacherRepository.delete(teacher);
+        surveyRepository.deleteByTeacherId(teacher.getId());
+    }
+
+    private Teacher updateTeacher(Teacher teacher, Teacher newTeacher) {
+        throwIfHasAnswers(teacher, "Cannot update teacher");
+        teacher.setDegree(newTeacher.getDegree());
+        teacher.setName(newTeacher.getName());
+        teacher.setSurname(newTeacher.getSurname());
+        return teacherRepository.update(teacher);
     }
 }

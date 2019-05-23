@@ -7,7 +7,7 @@ plugins {
 group 'pl.niewiemmichal'
 version '1.0'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 10
 
 repositories {
     mavenCentral()

@@ -1,11 +1,8 @@
 package pl.niewiemmichal.repositories;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import pl.niewiemmichal.model.Answer;
-import pl.niewiemmichal.model.Survey;
 
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
@@ -16,10 +13,26 @@ public class AnswerJpaRepository extends GenericJpaRepository<Answer, Long> impl
 
     @Override
     @Transactional
-    public List<Answer> findBySurveyId(Long surveyId) {
+    public Stream<Answer> findBySurveyId(Long surveyId) {
         return findAll().stream()
-                .filter(a -> a.getSurvey().getId().equals(surveyId))
-                .collect(Collectors.toList());
+                .filter(a -> a.getSurvey().getId().equals(surveyId));
     }
 
+    @Override
+    public Stream<Answer> findByQuestionId(Long questionId) {
+        return findAll().stream()
+                .filter(a -> a.getQuestion().getId().equals(questionId));
+    }
+
+    @Override
+    public Stream<Answer> findBySurvey_TeacherId(Long teacherId) {
+        return findAll().stream()
+                .filter(s -> s.getSurvey().getTeacher().getId().equals(teacherId));
+    }
+
+    @Override
+    public Stream<Answer> findBySurvey_SubjectId(Long subjectId) {
+        return findAll().stream()
+                .filter(s -> s.getSurvey().getSubject().getId().equals(subjectId));
+    }
 }

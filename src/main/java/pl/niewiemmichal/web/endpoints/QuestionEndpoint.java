@@ -1,8 +1,8 @@
 package pl.niewiemmichal.web.endpoints;
 
-import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Question;
+import pl.niewiemmichal.repositories.AnswerRepository;
 import pl.niewiemmichal.repositories.QuestionRepository;
 
 import javax.inject.Inject;
@@ -15,10 +15,12 @@ import java.util.List;
 public class QuestionEndpoint {
 
     private QuestionRepository questionRepository;
+    private AnswerRepository answerRepository;
 
     @Inject
-    public QuestionEndpoint(QuestionRepository questionRepository) {
+    public QuestionEndpoint(AnswerRepository answerRepository, QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
+        this.answerRepository = answerRepository;
     }
 
     public QuestionEndpoint() {}
@@ -41,6 +43,7 @@ public class QuestionEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Question addQuestion(@Valid Question question) {
+        question.setId(null);
         return questionRepository.save(question);
     }
 
@@ -49,20 +52,35 @@ public class QuestionEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Question updateQuestion(@PathParam("id") Long id, @Valid Question question) {
-        if(!questionRepository.findById(id).isPresent())
-            throw new ResourceDoesNotExistException("Question", "id", id.toString());
-        else if(question.getId() != null && !(id.equals(question.getId())))
-            throw new ResourceConflictException("Question", "id", id.toString(), question.getId().toString());
-        else {
-            question.setId(id);
-            return questionRepository.update(question);
-        }
+        return questionRepository.findById(id)
+                .map(q -> updateQuestion(q, question))
+                .orElseGet(() -> addQuestion(question));
     }
 
     @DELETE
     @Path("/{id}")
     public void deleteQuestion(@PathParam("id") Long id) {
         questionRepository.findById(id)
-                .ifPresent(q -> questionRepository.delete(q));
+                .ifPresent(this::deleteQuestion);
+    }
+
+    private void throwIfHasAnswers(Question question, String message) {
+        answerRepository.findByQuestionId(question.getId())
+                .findAny()
+                .ifPresent(a -> {
+                    throw new BadRequestException(message);
+                });
+    }
+
+    private void deleteQuestion(Question question) {
+        throwIfHasAnswers(question, "Cannot delete question");
+        questionRepository.delete(question);
+    }
+
+    private Question updateQuestion(Question question, Question newQuestion) {
+        throwIfHasAnswers(question, "Cannot update question");
+        question.setContents(newQuestion.getContents());
+        question.setIsOpen(newQuestion.getIsOpen());
+        return questionRepository.update(question);
     }
 }

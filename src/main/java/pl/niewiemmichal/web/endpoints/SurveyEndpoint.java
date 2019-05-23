@@ -1,10 +1,9 @@
 package pl.niewiemmichal.web.endpoints;
 
-import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
-import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Subject;
 import pl.niewiemmichal.model.Survey;
 import pl.niewiemmichal.model.Teacher;
+import pl.niewiemmichal.repositories.AnswerRepository;
 import pl.niewiemmichal.repositories.SubjectRepository;
 import pl.niewiemmichal.repositories.SurveyRepository;
 import pl.niewiemmichal.repositories.TeacherRepository;
@@ -21,14 +20,17 @@ public class SurveyEndpoint {
     private SurveyRepository surveyRepository;
     private TeacherRepository teacherRepository;
     private SubjectRepository subjectRepository;
+    private AnswerRepository answerRepository;
 
     @Inject
     public SurveyEndpoint(SurveyRepository surveyRepository,
                           TeacherRepository teacherRepository,
-                          SubjectRepository subjectRepository) {
+                          SubjectRepository subjectRepository,
+                          AnswerRepository answerRepository) {
         this.surveyRepository = surveyRepository;
         this.teacherRepository = teacherRepository;
         this.subjectRepository = subjectRepository;
+        this.answerRepository = answerRepository;
     }
 
     public SurveyEndpoint() {}
@@ -36,7 +38,7 @@ public class SurveyEndpoint {
     @GET
     @Path ("/{id}")
     @Produces (MediaType.APPLICATION_JSON)
-    public Survey getSurvey(@PathParam ("subjectId") Long id) {
+    public Survey getSurvey(@PathParam("id") Long id) {
         return surveyRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Survey with id=" + id + " does not exist"));
     }
@@ -60,6 +62,7 @@ public class SurveyEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Survey addSurvey(@Valid Survey survey) {
+        survey.setId(null);
         return surveyRepository.save(survey);
     }
 
@@ -89,25 +92,23 @@ public class SurveyEndpoint {
         }
     }
 
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Survey updateSurvey(@PathParam("id") Long id, @Valid Survey survey) {
-        if(!surveyRepository.findById(id).isPresent())
-            throw new NotFoundException("Survey with id=" + id + " does not exist");
-        else if(survey.getId() != null && !(id.equals(survey.getId())))
-            throw new BadRequestException("Survey id does not equal id provided in uri");
-        else {
-            survey.setId(id);
-            return surveyRepository.update(survey);
-        }
-    }
-
     @DELETE
     @Path("/{id}")
     public void deleteSurvey(@PathParam("id") Long id) {
         surveyRepository.findById(id)
-                .ifPresent(q -> surveyRepository.delete(q));
+                .ifPresent(this::deleteSurvey);
+    }
+
+    private void throwIfHasAnswers(Survey survey, String message) {
+        answerRepository.findBySurveyId(survey.getId())
+                .findAny()
+                .ifPresent(a -> {
+                    throw new BadRequestException(message);
+                });
+    }
+
+    private void deleteSurvey(Survey survey) {
+        throwIfHasAnswers(survey, "Cannot delete survey");
+        surveyRepository.delete(survey);
     }
 }

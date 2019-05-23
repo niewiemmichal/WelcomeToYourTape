@@ -1,6 +1,5 @@
 package pl.niewiemmichal.web.endpoints;
 
-import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Answer;
 import pl.niewiemmichal.repositories.AnswerRepository;
@@ -11,6 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/answers")
 public class AnswerEndpoint {
@@ -42,13 +42,13 @@ public class AnswerEndpoint {
     @Path("/s/{surveyId}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Answer> getAllSurveyAnswers(@PathParam("surveyId") Long surveyId) {
-        return answerRepository.findBySurveyId(surveyId);
-    }
+        return answerRepository.findBySurveyId(surveyId).collect(Collectors.toList());
+}
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addAnswer(@Valid Answer[] answers) {
-        Arrays.stream(answers).forEach(answerRepository::save);
+    public void addAnswers(@Valid Answer[] answers) {
+        Arrays.stream(answers).forEach(this::addAnswer);
     }
 
     @PUT
@@ -56,14 +56,9 @@ public class AnswerEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Answer updateAnswer(@PathParam("id") Long id, @Valid Answer answer) {
-        if(!answerRepository.findById(id).isPresent())
-            throw new ResourceDoesNotExistException("Answer", "id", id.toString());
-        else if(answer.getId() != null && !(id.equals(answer.getId())))
-            throw new ResourceConflictException("Answer", "id", id.toString(), answer.getId().toString());
-        else {
-            answer.setId(id);
-            return answerRepository.update(answer);
-        }
+        return answerRepository.findById(id)
+                .map(a -> updateAnswer(a, answer))
+                .orElseGet(() -> addAnswer(answer));
     }
 
     @DELETE
@@ -71,5 +66,19 @@ public class AnswerEndpoint {
     public void deleteAnswer(@PathParam("id") Long id) {
         answerRepository.findById(id)
                 .ifPresent(q -> answerRepository.delete(q));
+    }
+
+    private Answer addAnswer(Answer answer) {
+        answer.setId(null);
+        return answerRepository.save(answer);
+    }
+
+    private Answer updateAnswer(Answer answer, Answer newAnswer) {
+        if(answer.getQuestion().getIsOpen()) {
+            answer.setContents(newAnswer.getContents());
+        } else {
+            answer.setRating(newAnswer.getRating());
+        }
+        return answerRepository.update(answer);
     }
 }
