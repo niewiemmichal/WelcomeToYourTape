@@ -1,5 +1,12 @@
 package pl.niewiemmichal.web.endpoints;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Question;
 import pl.niewiemmichal.repositories.AnswerRepository;
@@ -28,13 +35,29 @@ public class QuestionEndpoint {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Question getQuestion(@PathParam("id") Long id) {
+    @Operation(summary = "Get question by id",
+            tags = "questions",
+            responses = {
+                    @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Question.class)),
+                            description = "Question with given id"),
+                    @ApiResponse(responseCode = "400", description = "Invalid id format supplied"),
+                    @ApiResponse(responseCode = "404", description = "Question not found") }
+    )
+    public Question getQuestion(@Parameter(description = "Id of existing question", required = true) @PathParam("id") Long id) {
         return questionRepository.findById(id)
                 .orElseThrow(() -> new ResourceDoesNotExistException("Question", "id", id.toString()));
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all answers",
+            tags = "questions",
+            responses = {
+                    @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Question.class))),
+                            description = "All questions") }
+    )
     public List<Question> getAllQuestions() {
         return questionRepository.findAll();
     }
@@ -42,6 +65,14 @@ public class QuestionEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add question",
+            tags = "questions",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ok"),
+                    @ApiResponse(responseCode = "400", description = "Invalid body"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            }
+    )
     public Question addQuestion(@Valid Question question) {
         question.setId(null);
         return questionRepository.save(question);
@@ -51,7 +82,19 @@ public class QuestionEndpoint {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Question updateQuestion(@PathParam("id") Long id, @Valid Question question) {
+    @Operation(summary = "Update question by id",
+            description = "Updates question if it has no answers",
+            tags = "questions",
+            responses = {
+                    @ApiResponse(responseCode = "200", content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Question.class)),
+                            description = "Updated question"),
+                    @ApiResponse(responseCode = "400", description = "Invalid body"),
+                    @ApiResponse(responseCode = "409", description = "Question has answers"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            }
+    )
+    public Question updateQuestion(@Parameter(description = "Id of existing question", required = true) @PathParam("id") Long id, @Valid Question question) {
         return questionRepository.findById(id)
                 .map(q -> updateQuestion(q, question))
                 .orElseGet(() -> addQuestion(question));
@@ -59,7 +102,16 @@ public class QuestionEndpoint {
 
     @DELETE
     @Path("/{id}")
-    public void deleteQuestion(@PathParam("id") Long id) {
+    @Operation(summary = "Delete question by id",
+            description = "Deletes question if it has no answers",
+            tags = "questions",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Question deleted or does not exist"),
+                    @ApiResponse(responseCode = "400", description = "Invalid id format supplied"),
+                    @ApiResponse(responseCode = "409", description = "Question has answers")
+            }
+    )
+    public void deleteQuestion(@Parameter(description = "Id of existing question", required = true) @PathParam("id") Long id) {
         questionRepository.findById(id)
                 .ifPresent(this::deleteQuestion);
     }
@@ -68,7 +120,7 @@ public class QuestionEndpoint {
         answerRepository.findByQuestionId(question.getId())
                 .findAny()
                 .ifPresent(a -> {
-                    throw new BadRequestException(message);
+                    throw new ResourceConflictException(message);
                 });
     }
 
