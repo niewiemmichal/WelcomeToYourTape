@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Subject;
 import pl.niewiemmichal.model.Survey;
 import pl.niewiemmichal.model.Teacher;
@@ -55,7 +56,7 @@ public class SurveyEndpoint {
     )
     public Survey getSurvey(@Parameter(description = "Id of existing survey", required = true) @PathParam("id") Long id) {
         return surveyRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Survey with id=" + id + " does not exist"));
+                .orElseThrow(() -> new ResourceDoesNotExistException("Survey", "id", id.toString()));
     }
 
     @GET
@@ -75,8 +76,8 @@ public class SurveyEndpoint {
                             @Parameter(description = "Id of existing teacher", required = true)
                                 @PathParam ("teacherId") Long teacherId) {
         return surveyRepository.findByTeacherIdAndSubjectId(teacherId, subjectId)
-                .orElseThrow(() -> new NotFoundException("Survey for teacher with id=" + teacherId +
-                        " and subject with id=" + subjectId + " does not exist"));
+                .orElseThrow(() -> new ResourceDoesNotExistException("Survey", "teacherId and subjectId",
+                        teacherId.toString() + " " + subjectId.toString()));
     }
 
     @GET

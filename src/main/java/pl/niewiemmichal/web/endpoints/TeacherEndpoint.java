@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import pl.niewiemmichal.commons.exceptions.ResourceConflictException;
 import pl.niewiemmichal.commons.exceptions.ResourceDoesNotExistException;
 import pl.niewiemmichal.model.Subject;
 import pl.niewiemmichal.model.Survey;
@@ -145,14 +146,14 @@ public class TeacherEndpoint {
         answerRepository.findBySurvey_TeacherId(teacher.getId())
                 .findAny()
                 .ifPresent(a -> {
-                    throw new BadRequestException(message);
+                    throw new ResourceConflictException(message);
                 });
     }
 
     private void deleteTeacherAndSurveys(Teacher teacher) {
         throwIfHasAnswers(teacher, "Cannot delete teacher");
-        teacherRepository.delete(teacher);
         surveyRepository.deleteByTeacherId(teacher.getId());
+        teacherRepository.delete(teacher);
     }
 
     private Teacher updateTeacher(Teacher teacher, Teacher newTeacher) {
