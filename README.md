@@ -12,7 +12,7 @@ Give feedback, share opinions, rate subjects and show them why your life has bec
 Two options are available to run the application. 
 
 ### Running with Docker
-To run the application with Docker run following commands in project root directory. Running with docker MySQL database named "welcometoyourtape".
+To run the application with Docker run following commands in project root directory. Running with Docker requires MySQL database named "welcometoyourtape".
 
 ```
 ./gradlew build
