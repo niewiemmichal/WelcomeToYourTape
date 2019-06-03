@@ -18,9 +18,6 @@ To run the application with Docker run following commands in project root direct
 ./gradlew build
 ```
 ```
-docker build .
-```
-```
 docker build -t wtyt-application .
 ```
 ```
